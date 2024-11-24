@@ -35,4 +35,9 @@ app.MapControllerRoute(
     pattern: "Usuario/{action=Index}/{id?}",
     defaults: new { controller = "Usuario" });
 
+app.MapControllerRoute(
+    name: "doacoes",
+    pattern: "doacoes/{action=Index}/{id?}",
+    defaults: new { controller = "Doacoes" });
+
 app.Run();
