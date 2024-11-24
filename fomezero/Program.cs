@@ -32,12 +32,23 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "usuario",
-    pattern: "Usuario/{action=Index}/{id?}",
-    defaults: new { controller = "Usuario" });
+    pattern: "usuario/{action=Index}/{id?}",
+    defaults: new { controller = "Usuarios" });
 
 app.MapControllerRoute(
     name: "doacoes",
     pattern: "doacoes/{action=Index}/{id?}",
     defaults: new { controller = "Doacoes" });
+
+app.MapControllerRoute(
+    name: "retirada_doações",
+    pattern: "RetiradaDoações/{action=Index}/{id?}",
+    defaults: new { controller = "RetiradaDoacoes" });
+
+app.MapControllerRoute(
+    name: "instituicoes",
+    pattern: "instituicoes/{action=Index}/{id?}",
+    defaults: new { controller = "Instituicoes" });
+
 
 app.Run();
