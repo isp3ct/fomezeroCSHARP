@@ -41,8 +41,8 @@ app.MapControllerRoute(
     defaults: new { controller = "Doacoes" });
 
 app.MapControllerRoute(
-    name: "retirada_doações",
-    pattern: "RetiradaDoações/{action=Index}/{id?}",
+    name: "retirada_doacoes",
+    pattern: "retiradadoacoes/{action=Index}/{id?}",
     defaults: new { controller = "RetiradaDoacoes" });
 
 app.MapControllerRoute(
@@ -50,5 +50,19 @@ app.MapControllerRoute(
     pattern: "instituicoes/{action=Index}/{id?}",
     defaults: new { controller = "Instituicoes" });
 
+app.MapControllerRoute(
+    name: "doacoes_instituicoes",
+    pattern: "doacoesinstituicoes/{action=Index}/{id?}",
+    defaults: new { controller = "DoacoesInstituicoes" });
+
+app.MapControllerRoute(
+    name: "tipo_doacaos",
+    pattern: "tipodoacaos/{action=Index}/{id?}",
+    defaults: new { controller = "TipoDoacaos" });
+
+app.MapControllerRoute(
+    name: "locais_retirada",
+    pattern: "locaisretiradum/{action=Index}/{id?}",
+    defaults: new { controller = "LocaisRetiradums" });
 
 app.Run();
