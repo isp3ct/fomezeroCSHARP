@@ -48,7 +48,7 @@ namespace fomezero.Controllers
         // GET: Doacoes/Create
         public IActionResult Create()
         {
-            ViewData["TipoDoacaoId"] = new SelectList(_context.TipoDoacaos, "Id", "Id");
+            ViewData["TipoDoacaoDescricao"] = new SelectList(_context.TipoDoacaos, "Id", "Descricao");
             ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Email");
             return View();
         }
@@ -84,7 +84,7 @@ namespace fomezero.Controllers
             {
                 return NotFound();
             }
-            ViewData["TipoDoacaoId"] = new SelectList(_context.TipoDoacaos, "Id", "Id", doaco.TipoDoacaoId);
+            ViewData["TipoDoacaoDescricao"] = new SelectList(_context.TipoDoacaos, "Id", "Descricao", doaco.TipoDoacaoId);
             ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Email", doaco.UsuarioId);
             return View(doaco);
         }

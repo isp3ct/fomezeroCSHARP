@@ -14,8 +14,8 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="DoacaoId" class="control-label"></label>
-                <select asp-for="DoacaoId" class="form-control" asp-items="ViewBag.DoacaoId"></select>
+                <label asp-for="DoacaoId" class="control-label">Tipo Doação</label>
+                <select asp-for="DoacaoId" class="form-control" asp-items="ViewBag.DoacaoDescricaoAlimento"></select>
                 <span asp-validation-for="DoacaoId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -24,8 +24,8 @@
                 <span asp-validation-for="BeneficiarioId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LocalRetiradaId" class="control-label"></label>
-                <select asp-for="LocalRetiradaId" class="form-control" asp-items="ViewBag.LocalRetiradaId"></select>
+                <label asp-for="LocalRetiradaId" class="control-label">Endereço de Retirada</label>
+                <select asp-for="LocalRetiradaId" class="form-control" asp-items="ViewBag.LocalRetiradaEndereco"></select>
                 <span asp-validation-for="LocalRetiradaId" class="text-danger"></span>
             </div>
             <div class="form-group">

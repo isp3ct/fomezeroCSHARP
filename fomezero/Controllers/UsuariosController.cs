@@ -22,92 +22,63 @@ namespace fomezero.Controllers
         public async Task<IActionResult> Index()
         {
             var usuarios = await _context.Usuarios
-                .Include(u => u.TipoUsuario) // Inclui o relacionamento com TipoUsuario
+                .Include(u => u.TipoUsuario)
                 .ToListAsync();
             return View(usuarios);
-        }
-
-        // GET: Usuarios/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var usuario = await _context.Usuarios
-                .Include(u => u.TipoUsuario)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-
-            return View(usuario);
         }
 
         // GET: Usuarios/Create
         public IActionResult Create()
         {
-            // Preenche o dropdown com os tipos de usuário disponíveis
             ViewBag.TipoUsuarioId = new SelectList(_context.TipoUsuarios.ToList(), "Id", "Descricao");
             return View();
         }
 
+        // POST: Usuarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Email,Telefone,Senha,TipoUsuarioId,DocumentoIdentificacao")] Usuario usuario, string DescricaoTipoUsuario)
+        public async Task<IActionResult> Create([Bind("Nome,Email,Telefone,Senha,TipoUsuarioId,DocumentoIdentificacao")] Usuario usuario)
         {
-            // Removendo a validação do campo "DescricaoTipoUsuario" do ModelState
-            ModelState.Remove("DescricaoTipoUsuario");
-
             // Verifica se o email já existe no banco de dados
             if (_context.Usuarios.Any(u => u.Email == usuario.Email))
             {
                 ModelState.AddModelError("Email", "O email já está em uso. Por favor, insira um email diferente.");
             }
 
+            // Verifica se o CPF já existe no banco de dados
+            if (_context.Usuarios.Any(u => u.DocumentoIdentificacao == usuario.DocumentoIdentificacao))
+            {
+                ModelState.AddModelError("DocumentoIdentificacao", "O CPF já está em uso. Por favor, insira um CPF diferente.");
+            }
+
             if (!ModelState.IsValid)
             {
-                // Logando os erros do ModelState para entender o problema de validação
-                foreach (var modelState in ModelState.Values)
+                // Adicionando logs detalhados para possíveis problemas no ModelState
+                foreach (var state in ModelState)
                 {
-                    foreach (var error in modelState.Errors)
+                    foreach (var error in state.Value.Errors)
                     {
-                        Console.WriteLine($"Erro: {error.ErrorMessage}");
+                        Console.WriteLine($"Erro no campo {state.Key}: {error.ErrorMessage}");
                     }
                 }
 
-                // Recarrega a lista de opções caso haja erro no ModelState
+                // Recarrega a lista de opções para o dropdown
                 ViewBag.TipoUsuarioId = new SelectList(_context.TipoUsuarios.ToList(), "Id", "Descricao", usuario.TipoUsuarioId);
                 return View(usuario);
             }
 
             try
             {
-                // Recupera o TipoUsuario do banco de dados para popular a propriedade de navegação
-                usuario.TipoUsuario = await _context.TipoUsuarios.FindAsync(usuario.TipoUsuarioId);
-                if (usuario.TipoUsuario == null)
-                {
-                    ModelState.AddModelError("TipoUsuarioId", "O tipo de usuário selecionado é inválido.");
-                    ViewBag.TipoUsuarioId = new SelectList(_context.TipoUsuarios.ToList(), "Id", "Descricao", usuario.TipoUsuarioId);
-                    return View(usuario);
-                }
-
-                // Log do valor de TipoUsuarioId e da descrição do tipo
-                Console.WriteLine($"TipoUsuarioId recebido: {usuario.TipoUsuarioId}, Descrição: {usuario.TipoUsuario.Descricao}");
-
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                // Loga o erro ocorrido durante o salvamento do usuário
                 Console.WriteLine($"Erro ao salvar usuário: {ex.Message}");
+                ModelState.AddModelError("", "Ocorreu um erro ao salvar os dados. Por favor, tente novamente.");
             }
 
-            // Recarrega a lista de opções para o dropdown caso algo dê errado
             ViewBag.TipoUsuarioId = new SelectList(_context.TipoUsuarios.ToList(), "Id", "Descricao", usuario.TipoUsuarioId);
             return View(usuario);
         }
@@ -126,12 +97,11 @@ namespace fomezero.Controllers
                 return NotFound();
             }
 
-            // Preenche o dropdown com os tipos de usuário disponíveis para a edição
             ViewBag.TipoUsuarioId = new SelectList(_context.TipoUsuarios.ToList(), "Id", "Descricao", usuario.TipoUsuarioId);
             return View(usuario);
         }
 
-        // POST: Editar USUÁRIO
+        // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Email,Telefone,Senha,TipoUsuarioId,DocumentoIdentificacao")] Usuario usuario)
@@ -141,29 +111,59 @@ namespace fomezero.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            // Verifica se o email já está em uso por outro usuário
+            if (_context.Usuarios.Any(u => u.Email == usuario.Email && u.Id != id))
             {
-                try
-                {
-                    _context.Update(usuario);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UsuarioExists(usuario.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("Email", "O email já está em uso. Por favor, insira um email diferente.");
             }
 
-            // Recarrega a lista de opções caso haja erro no ModelState
-            ViewBag.TipoUsuarioId = new SelectList(_context.TipoUsuarios.ToList(), "Id", "Descricao", usuario.TipoUsuarioId);
+            // Verifica se o CPF já está em uso por outro usuário
+            if (_context.Usuarios.Any(u => u.DocumentoIdentificacao == usuario.DocumentoIdentificacao && u.Id != id))
+            {
+                ModelState.AddModelError("DocumentoIdentificacao", "O CPF já está em uso. Por favor, insira um CPF diferente.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.TipoUsuarioId = new SelectList(_context.TipoUsuarios.ToList(), "Id", "Descricao", usuario.TipoUsuarioId);
+                return View(usuario);
+            }
+
+            try
+            {
+                _context.Update(usuario);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UsuarioExists(usuario.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        // GET: Usuarios/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var usuario = await _context.Usuarios
+                .Include(u => u.TipoUsuario) // Inclui o relacionamento com TipoUsuario para trazer a descrição
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
             return View(usuario);
         }
 
@@ -186,7 +186,7 @@ namespace fomezero.Controllers
             return View(usuario);
         }
 
-        // POST: Confirmar Exclusão de USUÁRIO
+        // POST: Usuarios/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -195,13 +195,12 @@ namespace fomezero.Controllers
             if (usuario != null)
             {
                 _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        // Verifica se o usuário existe no banco de dados
         private bool UsuarioExists(int id)
         {
             return _context.Usuarios.Any(e => e.Id == id);

@@ -50,8 +50,8 @@ namespace fomezero.Controllers
         public IActionResult Create()
         {
             ViewData["BeneficiarioId"] = new SelectList(_context.Usuarios, "Id", "Email");
-            ViewData["DoacaoId"] = new SelectList(_context.Doacoes, "Id", "Id");
-            ViewData["LocalRetiradaId"] = new SelectList(_context.LocaisRetirada, "Id", "Id");
+            ViewData["DoacaoDescricaoAlimento"] = new SelectList(_context.Doacoes, "Id", "DescricaoAlimento");
+            ViewData["LocalRetiradaEndereco"] = new SelectList(_context.LocaisRetirada, "Id", "Endereco");
             return View();
         }
 
@@ -88,8 +88,8 @@ namespace fomezero.Controllers
                 return NotFound();
             }
             ViewData["BeneficiarioId"] = new SelectList(_context.Usuarios, "Id", "Email", retiradaDoaco.BeneficiarioId);
-            ViewData["DoacaoId"] = new SelectList(_context.Doacoes, "Id", "Id", retiradaDoaco.DoacaoId);
-            ViewData["LocalRetiradaId"] = new SelectList(_context.LocaisRetirada, "Id", "Id", retiradaDoaco.LocalRetiradaId);
+            ViewData["DoacaoDescricaoAlimento"] = new SelectList(_context.Doacoes, "Id", "DescricaoAlimento", retiradaDoaco.DoacaoId);
+            ViewData["LocalRetiradaEndereco"] = new SelectList(_context.LocaisRetirada, "Id", "Endereco", retiradaDoaco.LocalRetiradaId);
             return View(retiradaDoaco);
         }
 
