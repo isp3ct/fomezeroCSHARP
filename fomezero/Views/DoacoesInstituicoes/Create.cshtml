@@ -4,33 +4,33 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1 class="mb-4">Criar Nova Doação para Instituição</h1>
 
-<h4>DoacoesInstituico</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+
+<div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="DoacaoId" class="control-label"></label>
-                <select asp-for="DoacaoId" class ="form-control" asp-items="ViewBag.DoacaoId"></select>
+                <label asp-for="DoacaoId" class="control-label">Tipo de Doação</label>
+                <select asp-for="DoacaoId" class="form-control" asp-items="ViewBag.DoacaoDescricaoAlimento"></select>
             </div>
             <div class="form-group">
-                <label asp-for="InstituicaoId" class="control-label"></label>
-                <select asp-for="InstituicaoId" class ="form-control" asp-items="ViewBag.InstituicaoId"></select>
+                <label asp-for="InstituicaoId" class="control-label">Instituição</label>
+                <select asp-for="InstituicaoId" class="form-control" asp-items="ViewBag.InstituicaoNome"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Salvar" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-secondary ml-2">Voltar para Lista</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

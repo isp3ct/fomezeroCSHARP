@@ -1,0 +1,39 @@
+﻿@model fomezero.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px; border-radius: 10px;">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">@ViewData["Title"]</h2>
+            <form asp-action="EfetuarLogin" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="Digite seu email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Senha" class="form-label">Senha</label>
+                    <input asp-for="Senha" class="form-control" type="password" placeholder="Digite sua senha" />
+                    <span asp-validation-for="Senha" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid">
+                    <input type="submit" value="Entrar" class="btn btn-primary btn-block" />
+                </div>
+            </form>
+            <div class="text-center mt-4">
+                <small class="text-muted">Não tem uma conta? <a href="@Url.Action("Create", "Usuarios")">Cadastre-se aqui</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

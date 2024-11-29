@@ -56,4 +56,28 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+    <script>
+        $(document).ready(function () {
+            // Aplicar máscara ao campo CPF
+            $('#DocumentoIdentificacao').mask('000.000.000-00');
+
+            // Aplicar máscara ao campo Telefone
+            $('#Telefone').mask('(00) 00000-0000', {
+                onKeyPress: function (val, e, field, options) {
+                    var mask = val.replace(/\D/g, '').length === 10 ? '(00) 0000-0000' : '(00) 00000-0000';
+                    $('#Telefone').mask(mask, options);
+                }
+            });
+
+            // Manter a lógica do dropdown para Tipo de Usuário
+            $('#tipoUsuarioDropdown').change(function () {
+                var selectedOption = this.options[this.selectedIndex];
+                var descricao = selectedOption.text;
+                $('#descricaoTipoUsuario').val(descricao);
+            });
+        });
+    </script>
+
 }

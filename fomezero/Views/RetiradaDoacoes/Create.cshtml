@@ -1,50 +1,54 @@
-﻿@model fomezero.Models.RetiradaDoaco
+﻿@model fomezero.Models.RetiradaDoacao
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Criar Retirada de Doação";
 }
 
-<h1>Create</h1>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="mb-4">Criar Nova Retirada de Doação</h1>
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-<h4>RetiradaDoaco</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="DoacaoId" class="control-label">Tipo de Doação</label>
-                <select asp-for="DoacaoId" class="form-control" asp-items="ViewBag.DoacaoDescricaoAlimento"></select>
+                        <div class="form-group">
+                            <label asp-for="DoacaoId" class="control-label">Tipo de Doação</label>
+                            <select asp-for="DoacaoId" class="form-control" asp-items="ViewBag.DoacaoDescricaoAlimento" required>
+                                <option value="">Selecione um Produto</option>
+                            </select>
+                            <span asp-validation-for="DoacaoId" class="text-danger"></span>
+                            <span asp-validation-for="DoacaoId" class="text-danger"></span>
+                        </div>
+                        <input type="hidden" asp-for="BeneficiarioId" value="@User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value" />
+                        <div class="form-group">
+                            <label asp-for="LocalRetiradaId" class="control-label">Endereço de Retirada</label>
+                            <select asp-for="LocalRetiradaId" class="form-control" asp-items="ViewBag.LocalRetiradaEndereco"></select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DataAgendada" class="control-label">Data da Doação</label>
+                            <input asp-for="DataAgendada" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly="readonly" />
+                            <span asp-validation-for="DataAgendada" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DataRetirada" class="control-label">Data para Retirada</label>
+                            <input asp-for="DataRetirada" type="date" class="form-control" min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" max="@DateTime.Now.AddDays(5).ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="DataRetirada" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mt-4">
+                            <input type="submit" value="Criar" class="btn btn-success" />
+                            <a asp-action="Index" class="btn btn-secondary ml-2">Voltar para Lista</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="BeneficiarioId" class="control-label"></label>
-                <select asp-for="BeneficiarioId" class ="form-control" asp-items="ViewBag.BeneficiarioId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="LocalRetiradaId" class="control-label">Endereço de Retirada</label>
-                <select asp-for="LocalRetiradaId" class="form-control" asp-items="ViewBag.LocalRetiradaEndereco"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataAgendada" class="control-label"></label>
-                <input asp-for="DataAgendada" class="form-control" />
-                <span asp-validation-for="DataAgendada" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataRetirada" class="control-label"></label>
-                <input asp-for="DataRetirada" class="form-control" />
-                <span asp-validation-for="DataRetirada" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

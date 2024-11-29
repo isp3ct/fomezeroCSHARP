@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace fomezero.Models;
 
-public partial class RetiradaDoaco
+public partial class RetiradaDoacao
 {
     public int Id { get; set; }
 
@@ -19,7 +19,7 @@ public partial class RetiradaDoaco
 
     public virtual Usuario? Beneficiario { get; set; }
 
-    public virtual Doaco? Doacao { get; set; }
+    public virtual Doacao? Doacao { get; set; }
 
     public virtual LocaisRetiradum? LocalRetirada { get; set; }
 }

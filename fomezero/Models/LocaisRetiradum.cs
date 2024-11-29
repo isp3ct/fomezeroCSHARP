@@ -13,5 +13,5 @@ public partial class LocaisRetiradum
 
     public string HorarioDisponivel { get; set; } = null!;
 
-    public virtual ICollection<RetiradaDoaco> RetiradaDoacos { get; set; } = new List<RetiradaDoaco>();
+    public virtual ICollection<RetiradaDoacao> RetiradaDoacaos { get; set; } = new List<RetiradaDoacao>();
 }

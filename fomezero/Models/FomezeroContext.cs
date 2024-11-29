@@ -15,7 +15,7 @@ public partial class FomezeroContext : DbContext
     {
     }
 
-    public virtual DbSet<Doaco> Doacoes { get; set; }
+    public virtual DbSet<Doacao> Doacoes { get; set; }
 
     public virtual DbSet<DoacoesInstituico> DoacoesInstituicoes { get; set; }
 
@@ -23,7 +23,7 @@ public partial class FomezeroContext : DbContext
 
     public virtual DbSet<LocaisRetiradum> LocaisRetirada { get; set; }
 
-    public virtual DbSet<RetiradaDoaco> RetiradaDoacoes { get; set; }
+    public virtual DbSet<RetiradaDoacao> RetiradaDoacoes { get; set; }
 
     public virtual DbSet<TipoDoacao> TipoDoacaos { get; set; }
 
@@ -37,9 +37,9 @@ public partial class FomezeroContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Doaco>(entity =>
+        modelBuilder.Entity<Doacao>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("doacoes_pkey");
+            entity.HasKey(e => e.Id).HasName("Doacoes_pkey");
 
             entity.ToTable("doacoes");
 
@@ -57,18 +57,18 @@ public partial class FomezeroContext : DbContext
                 .HasPrecision(10, 2)
                 .HasColumnName("valor");
 
-            entity.HasOne(d => d.TipoDoacao).WithMany(p => p.Doacos)
+            entity.HasOne(d => d.TipoDoacao).WithMany(p => p.Doacaos)
                 .HasForeignKey(d => d.TipoDoacaoId)
-                .HasConstraintName("doacoes_tipo_doacao_id_fkey");
+                .HasConstraintName("Doacoes_tipo_doacao_id_fkey");
 
-            entity.HasOne(d => d.Usuario).WithMany(p => p.Doacos)
+            entity.HasOne(d => d.Usuario).WithMany(p => p.Doacaos)
                 .HasForeignKey(d => d.UsuarioId)
-                .HasConstraintName("doacoes_usuario_id_fkey");
+                .HasConstraintName("Doacoes_usuario_id_fkey");
         });
 
         modelBuilder.Entity<DoacoesInstituico>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("doacoes_instituicoes_pkey");
+            entity.HasKey(e => e.Id).HasName("Doacoes_instituicoes_pkey");
 
             entity.ToTable("doacoes_instituicoes");
 
@@ -78,11 +78,11 @@ public partial class FomezeroContext : DbContext
 
             entity.HasOne(d => d.Doacao).WithMany(p => p.DoacoesInstituicos)
                 .HasForeignKey(d => d.DoacaoId)
-                .HasConstraintName("doacoes_instituicoes_doacao_id_fkey");
+                .HasConstraintName("Doacoes_instituicoes_doacao_id_fkey");
 
             entity.HasOne(d => d.Instituicao).WithMany(p => p.DoacoesInstituicos)
                 .HasForeignKey(d => d.InstituicaoId)
-                .HasConstraintName("doacoes_instituicoes_instituicao_id_fkey");
+                .HasConstraintName("Doacoes_instituicoes_instituicao_id_fkey");
         });
 
         modelBuilder.Entity<Instituico>(entity =>
@@ -118,9 +118,9 @@ public partial class FomezeroContext : DbContext
                 .HasColumnName("nome");
         });
 
-        modelBuilder.Entity<RetiradaDoaco>(entity =>
+        modelBuilder.Entity<RetiradaDoacao>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("retirada_doacoes_pkey");
+            entity.HasKey(e => e.Id).HasName("retirada_Doacoes_pkey");
 
             entity.ToTable("retirada_doacoes");
 
@@ -135,17 +135,17 @@ public partial class FomezeroContext : DbContext
             entity.Property(e => e.DoacaoId).HasColumnName("doacao_id");
             entity.Property(e => e.LocalRetiradaId).HasColumnName("local_retirada_id");
 
-            entity.HasOne(d => d.Beneficiario).WithMany(p => p.RetiradaDoacos)
+            entity.HasOne(d => d.Beneficiario).WithMany(p => p.RetiradaDoacaos)
                 .HasForeignKey(d => d.BeneficiarioId)
-                .HasConstraintName("retirada_doacoes_beneficiario_id_fkey");
+                .HasConstraintName("retirada_Doacoes_beneficiario_id_fkey");
 
-            entity.HasOne(d => d.Doacao).WithMany(p => p.RetiradaDoacos)
+            entity.HasOne(d => d.Doacao).WithMany(p => p.RetiradaDoacaos)
                 .HasForeignKey(d => d.DoacaoId)
-                .HasConstraintName("retirada_doacoes_doacao_id_fkey");
+                .HasConstraintName("retirada_Doacoes_doacao_id_fkey");
 
-            entity.HasOne(d => d.LocalRetirada).WithMany(p => p.RetiradaDoacos)
+            entity.HasOne(d => d.LocalRetirada).WithMany(p => p.RetiradaDoacaos)
                 .HasForeignKey(d => d.LocalRetiradaId)
-                .HasConstraintName("retirada_doacoes_local_retirada_id_fkey");
+                .HasConstraintName("retirada_Doacoes_local_retirada_id_fkey");
         });
 
         modelBuilder.Entity<TipoDoacao>(entity =>

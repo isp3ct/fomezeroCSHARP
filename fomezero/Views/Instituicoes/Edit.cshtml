@@ -4,12 +4,11 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1 class="mb-4">Editar Instituição</h1>
 
-<h4>Instituico</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+
+<div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -24,16 +23,24 @@
                 <span asp-validation-for="Contato" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Salvar" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-secondary ml-2">Voltar para Lista</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#Contato').mask('(00) 00000-0000');
+        });
+    </script>
 }

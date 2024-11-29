@@ -1,8 +1,156 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+
+    // Obtém o tipo de usuário da sessão
+    var usuarioTipo = ViewContext.HttpContext.Session.GetString("TipoUsuarioId");
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<div class="container mt-5">
+    <div class="jumbotron text-center bg-primary text-white">
+        <h1 class="display-3">Bem-vindo ao Fome Zero!</h1>
+        <p class="lead">Vamos trabalhar juntos para combater a fome e ajudar aqueles que mais precisam.</p>
+    </div>
+
+    @if (string.IsNullOrEmpty(usuarioTipo))
+    {
+        <!-- Conteúdo para Usuário Não Logado -->
+        <div class="alert alert-info text-center">
+            <p>Por favor, faça login para acessar os recursos do sistema.</p>
+            <a href="~/Usuarios/Login" class="btn btn-primary btn-lg mt-3">Login</a>
+        </div>
+    }
+    else if (usuarioTipo == "Admin")
+    {
+        <!-- Conteúdo para Usuário Admin -->
+        <div class="alert alert-success text-center py-4">
+            <h2 class="display-4">Você está logado como <strong>Administrador</strong></h2>
+            <p class="lead">Aqui estão suas opções para gerenciar o sistema:</p>
+        </div>
+
+        <div class="row text-center mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-primary h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="card-title mb-0"><i class="fas fa-users"></i> Gerenciar Usuários</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <p class="card-text">Gerencie os usuários do sistema, incluindo doadores e beneficiários.</p>
+                        <a href="~/Usuarios/Index" class="btn btn-primary btn-lg mt-auto w-75"><i class="fas fa-user-cog"></i> Gerenciar Usuários</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-info h-100">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="card-title mb-0"><i class="fas fa-hand-holding-heart"></i> Gerenciar Doações</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <p class="card-text">Gerencie as doações feitas, garantindo que elas sejam distribuídas para quem precisa.</p>
+                        <a href="~/Doacoes/Index" class="btn btn-info btn-lg mt-auto w-75"><i class="fas fa-list-alt"></i> Gerenciar Doações</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-success h-100">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="card-title mb-0"><i class="fas fa-building"></i> Gerenciar Instituições</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <p class="card-text">Gerencie as instituições parceiras que ajudam a distribuir as doações.</p>
+                        <a href="~/Instituicoes/Index" class="btn btn-success btn-lg mt-auto w-75"><i class="fas fa-hands-helping"></i> Gerenciar Instituições</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row text-center mt-4">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-warning h-100">
+                    <div class="card-header bg-warning text-white">
+                        <h4 class="card-title mb-0"><i class="fas fa-gift"></i> Gerenciar Tipos de Doação</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <p class="card-text">Gerencie os tipos de doação disponíveis no sistema.</p>
+                        <a href="~/TipoDoacaos/Index" class="btn btn-warning btn-lg mt-auto w-75"><i class="fas fa-cogs"></i> Gerenciar Tipos de Doação</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-secondary h-100">
+                    <div class="card-header bg-secondary text-white">
+                        <h4 class="card-title mb-0"><i class="fas fa-map-marker-alt"></i> Gerenciar Locais de Retirada</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <p class="card-text">Gerencie os locais de retirada das doações, garantindo acesso fácil para todos.</p>
+                        <a href="~/LocaisRetiradums/Index" class="btn btn-secondary btn-lg mt-auto w-75"><i class="fas fa-map-marked"></i> Gerenciar Locais de Retirada</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-dark h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="card-title mb-0"><i class="fas fa-exchange-alt"></i> Doações e Instituições</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <p class="card-text">Relacione doações específicas a instituições que possam distribuí-las.</p>
+                        <a href="~/DoacoesInstituicoes/Index" class="btn btn-dark btn-lg mt-auto w-75"><i class="fas fa-sync-alt"></i> Doações e Instituições</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    else if (usuarioTipo == "Doador")
+    {
+        <!-- Conteúdo para Usuário Doador -->
+        <div class="alert alert-primary text-center py-4">
+            <h2 class="display-4">Obrigado por ser um <strong>Doador</strong>!</h2>
+            <p class="lead">Sua generosidade faz toda a diferença. Aqui estão suas opções para contribuir e acompanhar suas doações:</p>
+        </div>
+
+        <div class="row text-center mt-5">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-lg border-success h-100">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="card-title mb-0"><i class="fas fa-hand-holding-usd"></i> Cadastrar Nova Doação</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <p class="card-text">Faça uma nova doação e ajude a melhorar a vida daqueles que mais precisam.</p>
+                        <a href="~/Doacoes/Create" class="btn btn-success btn-lg mt-auto w-75"><i class="fas fa-plus-circle"></i> Nova Doação</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-lg border-info h-100">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="card-title mb-0"><i class="fas fa-list"></i> Ver Minhas Doações</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <p class="card-text">Confira as doações que você já fez e acompanhe o impacto que elas estão causando.</p>
+                        <a href="~/Doacoes/Index" class="btn btn-info btn-lg mt-auto w-75"><i class="fas fa-eye"></i> Minhas Doações</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (usuarioTipo == "Beneficiário")
+    {
+        <!-- Conteúdo para Usuário Beneficiário -->
+        <div class="alert alert-success text-center py-4">
+            <h2 class="display-4">Bem-vindo, <strong>Beneficiário</strong>!</h2>
+            <p class="lead">Aqui estão suas opções para acessar e gerenciar as doações disponíveis para você:</p>
+        </div>
+
+        <div class="row text-center mt-5">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-lg border-success h-100">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="card-title mb-0"><i class="fas fa-hand-holding-heart"></i> Retirar Doações Disponíveis</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <p class="card-text">Veja as doações disponíveis e programe a retirada no centro de distribuição mais próximo.</p>
+                        <a href="~/RetiradaDoacoes/Index" class="btn btn-success btn-lg mt-auto w-75"><i class="fas fa-box-open"></i> Retirar Doações</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }

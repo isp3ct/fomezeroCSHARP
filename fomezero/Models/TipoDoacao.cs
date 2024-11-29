@@ -9,5 +9,5 @@ public partial class TipoDoacao
 
     public string Descricao { get; set; } = null!;
 
-    public virtual ICollection<Doaco> Doacos { get; set; } = new List<Doaco>();
+    public virtual ICollection<Doacao> Doacaos { get; set; } = new List<Doacao>();
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fomezero.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace fomezero.Controllers
 {
@@ -53,16 +54,6 @@ namespace fomezero.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Adicionando logs detalhados para possíveis problemas no ModelState
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"Erro no campo {state.Key}: {error.ErrorMessage}");
-                    }
-                }
-
-                // Recarrega a lista de opções para o dropdown
                 ViewBag.TipoUsuarioId = new SelectList(_context.TipoUsuarios.ToList(), "Id", "Descricao", usuario.TipoUsuarioId);
                 return View(usuario);
             }
@@ -157,7 +148,7 @@ namespace fomezero.Controllers
             }
 
             var usuario = await _context.Usuarios
-                .Include(u => u.TipoUsuario) // Inclui o relacionamento com TipoUsuario para trazer a descrição
+                .Include(u => u.TipoUsuario)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (usuario == null)
             {
@@ -199,6 +190,50 @@ namespace fomezero.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Usuarios/Login
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EfetuarLogin(string email, string senha)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(senha))
+            {
+                ModelState.AddModelError(string.Empty, "Email e Senha são obrigatórios.");
+                return View("Login");
+            }
+
+            // Verifica se o email e senha correspondem a um usuário no banco de dados
+            var usuario = await _context.Usuarios
+                .Include(u => u.TipoUsuario)
+                .FirstOrDefaultAsync(u => u.Email == email && u.Senha == senha);
+
+            if (usuario == null)
+            {
+                ModelState.AddModelError(string.Empty, "Email ou senha incorretos.");
+                return View("Login");
+            }
+
+            // Armazena o ID do usuário e o tipo de usuário na sessão após o login bem-sucedido
+            HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
+            HttpContext.Session.SetString("UsuarioNome", usuario.Nome);
+            HttpContext.Session.SetString("TipoUsuarioId", usuario.TipoUsuario?.Descricao ?? ""); // Salva a descrição do tipo de usuário
+
+            // Redireciona para a página Index ou alguma outra página específica após o login bem-sucedido
+            return View("../Home/Index");
+        }
+
+        // GET: Usuarios/Logout
+        public IActionResult Logout()
+        {
+            // Limpa a sessão
+            HttpContext.Session.Clear();
+            return RedirectToAction(nameof(Login));
         }
 
         private bool UsuarioExists(int id)

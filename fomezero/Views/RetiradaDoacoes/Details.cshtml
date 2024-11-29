@@ -1,48 +1,53 @@
-﻿@model fomezero.Models.RetiradaDoaco
+﻿@model fomezero.Models.RetiradaDoacao
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Retirada de Doação";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>RetiradaDoaco</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataAgendada)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataAgendada)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataRetirada)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataRetirada)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Beneficiario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Beneficiario.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Doacao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Doacao.DescricaoAlimento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LocalRetirada)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LocalRetirada.Endereco)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="mb-4">Detalhes da Retirada de Doação</h1>
+            <div class="card">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4 font-weight-bold">
+                            Data da Doação
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.DataAgendada)
+                        </dd>
+                        <dt class="col-sm-4 font-weight-bold">
+                            Data para Retirada da Doação
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.DataRetirada)
+                        </dd>
+                        <dt class="col-sm-4 font-weight-bold">
+                            @Html.DisplayNameFor(model => model.Beneficiario)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.Beneficiario.Email)
+                        </dd>
+                        <dt class="col-sm-4 font-weight-bold">
+                            Tipo de Doação
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.Doacao.DescricaoAlimento)
+                        </dd>
+                        <dt class="col-sm-4 font-weight-bold">
+                            Local para Retirada
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.LocalRetirada.Endereco)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Editar</a>
+                <a asp-action="Index" class="btn btn-secondary ml-2">Voltar para Lista</a>
+            </div>
+        </div>
+    </div>
 </div>

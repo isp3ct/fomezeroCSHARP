@@ -11,7 +11,7 @@ public partial class DoacoesInstituico
 
     public int? InstituicaoId { get; set; }
 
-    public virtual Doaco? Doacao { get; set; }
+    public virtual Doacao? Doacao { get; set; }
 
     public virtual Instituico? Instituicao { get; set; }
 }

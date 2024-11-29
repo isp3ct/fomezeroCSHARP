@@ -1,59 +1,52 @@
-﻿@model IEnumerable<fomezero.Models.RetiradaDoaco>
+﻿@model IEnumerable<fomezero.Models.RetiradaDoacao>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista de Retiradas de Doação";
+
+    // Obtém o TipoUsuarioId e UsuarioNome da sessão
+    var tipoUsuarioId = ViewContext.HttpContext.Session.GetString("TipoUsuarioId");
+    var usuarioNome = ViewContext.HttpContext.Session.GetString("UsuarioNome");
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DataAgendada)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataRetirada)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Beneficiario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Doacao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LocalRetirada)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataAgendada)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataRetirada)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Beneficiario.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Doacao.DescricaoAlimento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LocalRetirada.Endereco)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">Retiradas de Doação</h1>
+            <p>
+                <a asp-action="Create" class="btn btn-primary mb-3">Criar Nova Retirada</a>
+            </p>
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Dia da Doação</th>
+                        <th>Data para Retirada da Doação</th>
+                        <th>Beneficiário</th>
+                        <th>Tipo de Doação</th>
+                        <th>Local de Retirada</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@(item?.DataAgendada.ToString("dd/MM/yyyy") ?? "-")</td>
+                            <td>@(item?.DataRetirada?.ToString("dd/MM/yyyy") ?? "-")</td>
+                            <td>@(item?.Beneficiario?.Nome ?? "-")</td>
+                            <td>@(item?.Doacao?.DescricaoAlimento ?? "-")</td>
+                            <td>@(item?.LocalRetirada?.Endereco ?? "-")</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item?.Id" class="btn btn-sm btn-warning">Editar</a>
+                                <a asp-action="Details" asp-route-id="@item?.Id" class="btn btn-sm btn-info ml-1">Detalhes</a>
+                                @if (tipoUsuarioId == "1") // Supondo que "1" seja o ID do Admin
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item?.Id" class="btn btn-sm btn-danger ml-1">Excluir</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

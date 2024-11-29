@@ -15,6 +15,10 @@ namespace fomezero.Controllers
 
         public IActionResult Index()
         {
+            // Obtém o TipoUsuarioId da sessão
+            var tipoUsuarioId = HttpContext.Session.GetString("TipoUsuarioId");
+            ViewData["TipoUsuarioId"] = tipoUsuarioId;
+
             return View();
         }
 

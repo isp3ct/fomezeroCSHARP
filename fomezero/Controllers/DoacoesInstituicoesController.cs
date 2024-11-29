@@ -33,23 +33,23 @@ namespace fomezero.Controllers
                 return NotFound();
             }
 
-            var doacoesInstituico = await _context.DoacoesInstituicoes
+            var DoacoesInstituico = await _context.DoacoesInstituicoes
                 .Include(d => d.Doacao)
                 .Include(d => d.Instituicao)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (doacoesInstituico == null)
+            if (DoacoesInstituico == null)
             {
                 return NotFound();
             }
 
-            return View(doacoesInstituico);
+            return View(DoacoesInstituico);
         }
 
         // GET: DoacoesInstituicoes/Create
         public IActionResult Create()
         {
-            ViewData["DoacaoId"] = new SelectList(_context.Doacoes, "Id", "Id");
-            ViewData["InstituicaoId"] = new SelectList(_context.Instituicoes, "Id", "Id");
+            ViewData["DoacaoDescricaoAlimento"] = new SelectList(_context.Doacoes, "Id", "DescricaoAlimento");
+            ViewData["InstituicaoNome"] = new SelectList(_context.Instituicoes, "Id", "Nome");
             return View();
         }
 
@@ -58,17 +58,17 @@ namespace fomezero.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DoacaoId,InstituicaoId")] DoacoesInstituico doacoesInstituico)
+        public async Task<IActionResult> Create([Bind("Id,DoacaoId,InstituicaoId")] DoacoesInstituico DoacoesInstituico)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(doacoesInstituico);
+                _context.Add(DoacoesInstituico);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DoacaoId"] = new SelectList(_context.Doacoes, "Id", "Id", doacoesInstituico.DoacaoId);
-            ViewData["InstituicaoId"] = new SelectList(_context.Instituicoes, "Id", "Id", doacoesInstituico.InstituicaoId);
-            return View(doacoesInstituico);
+            ViewData["DoacaoId"] = new SelectList(_context.Doacoes, "Id", "Id", DoacoesInstituico.DoacaoId);
+            ViewData["InstituicaoId"] = new SelectList(_context.Instituicoes, "Id", "Id", DoacoesInstituico.InstituicaoId);
+            return View(DoacoesInstituico);
         }
 
         // GET: DoacoesInstituicoes/Edit/5
@@ -79,14 +79,14 @@ namespace fomezero.Controllers
                 return NotFound();
             }
 
-            var doacoesInstituico = await _context.DoacoesInstituicoes.FindAsync(id);
-            if (doacoesInstituico == null)
+            var DoacoesInstituico = await _context.DoacoesInstituicoes.FindAsync(id);
+            if (DoacoesInstituico == null)
             {
                 return NotFound();
             }
-            ViewData["DoacaoId"] = new SelectList(_context.Doacoes, "Id", "Id", doacoesInstituico.DoacaoId);
-            ViewData["InstituicaoId"] = new SelectList(_context.Instituicoes, "Id", "Id", doacoesInstituico.InstituicaoId);
-            return View(doacoesInstituico);
+            ViewData["DoacaoDescricaoAlimento"] = new SelectList(_context.Doacoes, "Id", "DescricaoAlimento", DoacoesInstituico.DoacaoId);
+            ViewData["InstituicaoNome"] = new SelectList(_context.Instituicoes, "Id", "Nome", DoacoesInstituico.InstituicaoId);
+            return View(DoacoesInstituico);
         }
 
         // POST: DoacoesInstituicoes/Edit/5
@@ -94,9 +94,9 @@ namespace fomezero.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DoacaoId,InstituicaoId")] DoacoesInstituico doacoesInstituico)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DoacaoId,InstituicaoId")] DoacoesInstituico DoacoesInstituico)
         {
-            if (id != doacoesInstituico.Id)
+            if (id != DoacoesInstituico.Id)
             {
                 return NotFound();
             }
@@ -105,12 +105,12 @@ namespace fomezero.Controllers
             {
                 try
                 {
-                    _context.Update(doacoesInstituico);
+                    _context.Update(DoacoesInstituico);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DoacoesInstituicoExists(doacoesInstituico.Id))
+                    if (!DoacoesInstituicoExists(DoacoesInstituico.Id))
                     {
                         return NotFound();
                     }
@@ -121,9 +121,9 @@ namespace fomezero.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DoacaoId"] = new SelectList(_context.Doacoes, "Id", "Id", doacoesInstituico.DoacaoId);
-            ViewData["InstituicaoId"] = new SelectList(_context.Instituicoes, "Id", "Id", doacoesInstituico.InstituicaoId);
-            return View(doacoesInstituico);
+            ViewData["DoacaoId"] = new SelectList(_context.Doacoes, "Id", "Id", DoacoesInstituico.DoacaoId);
+            ViewData["InstituicaoId"] = new SelectList(_context.Instituicoes, "Id", "Id", DoacoesInstituico.InstituicaoId);
+            return View(DoacoesInstituico);
         }
 
         // GET: DoacoesInstituicoes/Delete/5
@@ -134,16 +134,16 @@ namespace fomezero.Controllers
                 return NotFound();
             }
 
-            var doacoesInstituico = await _context.DoacoesInstituicoes
+            var DoacoesInstituico = await _context.DoacoesInstituicoes
                 .Include(d => d.Doacao)
                 .Include(d => d.Instituicao)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (doacoesInstituico == null)
+            if (DoacoesInstituico == null)
             {
                 return NotFound();
             }
 
-            return View(doacoesInstituico);
+            return View(DoacoesInstituico);
         }
 
         // POST: DoacoesInstituicoes/Delete/5
@@ -151,10 +151,10 @@ namespace fomezero.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var doacoesInstituico = await _context.DoacoesInstituicoes.FindAsync(id);
-            if (doacoesInstituico != null)
+            var DoacoesInstituico = await _context.DoacoesInstituicoes.FindAsync(id);
+            if (DoacoesInstituico != null)
             {
-                _context.DoacoesInstituicoes.Remove(doacoesInstituico);
+                _context.DoacoesInstituicoes.Remove(DoacoesInstituico);
             }
 
             await _context.SaveChangesAsync();

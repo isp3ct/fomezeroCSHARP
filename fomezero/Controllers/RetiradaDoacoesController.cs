@@ -21,7 +21,21 @@ namespace fomezero.Controllers
         // GET: RetiradaDoacoes
         public async Task<IActionResult> Index()
         {
-            var fomezeroContext = _context.RetiradaDoacoes.Include(r => r.Beneficiario).Include(r => r.Doacao).Include(r => r.LocalRetirada);
+            // Obtém o TipoUsuarioId e UsuarioId da sessão
+            var tipoUsuarioId = HttpContext.Session.GetString("TipoUsuarioId");
+            var userId = HttpContext.Session.GetInt32("UsuarioId") ?? 0;
+
+            IQueryable<RetiradaDoacao> fomezeroContext = _context.RetiradaDoacoes
+                .Include(r => r.Beneficiario)
+                .Include(r => r.Doacao)
+                .Include(r => r.LocalRetirada);
+
+            // Se não for admin, mostra apenas as retiradas do usuário logado
+            if (tipoUsuarioId != "1" && userId != 0)
+            {
+                fomezeroContext = fomezeroContext.Where(r => r.BeneficiarioId == userId);
+            }
+
             return View(await fomezeroContext.ToListAsync());
         }
 
@@ -33,45 +47,58 @@ namespace fomezero.Controllers
                 return NotFound();
             }
 
-            var retiradaDoaco = await _context.RetiradaDoacoes
+            var retiradaDoacao = await _context.RetiradaDoacoes
                 .Include(r => r.Beneficiario)
                 .Include(r => r.Doacao)
                 .Include(r => r.LocalRetirada)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (retiradaDoaco == null)
+            if (retiradaDoacao == null)
             {
                 return NotFound();
             }
 
-            return View(retiradaDoaco);
+            return View(retiradaDoacao);
         }
 
         // GET: RetiradaDoacoes/Create
         public IActionResult Create()
         {
-            ViewData["BeneficiarioId"] = new SelectList(_context.Usuarios, "Id", "Email");
-            ViewData["DoacaoDescricaoAlimento"] = new SelectList(_context.Doacoes, "Id", "DescricaoAlimento");
+            // Obtém o UsuarioId da sessão
+            var userId = HttpContext.Session.GetInt32("UsuarioId") ?? 0;
+
+            // Se o usuário não for admin, definir automaticamente o BeneficiarioId para o usuário logado
+            var doacoesNaoRetiradas = _context.Doacoes
+                .Where(d => !_context.RetiradaDoacoes.Any(r => r.DoacaoId == d.Id));
+
+            ViewData["BeneficiarioId"] = new SelectList(_context.Usuarios.Where(u => u.Id == userId), "Id", "Nome");
+            ViewData["DoacaoDescricaoAlimento"] = new SelectList(doacoesNaoRetiradas, "Id", "DescricaoAlimento");
             ViewData["LocalRetiradaEndereco"] = new SelectList(_context.LocaisRetirada, "Id", "Endereco");
             return View();
         }
 
         // POST: RetiradaDoacoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DoacaoId,BeneficiarioId,LocalRetiradaId,DataAgendada,DataRetirada")] RetiradaDoaco retiradaDoaco)
+        public async Task<IActionResult> Create([Bind("Id,DoacaoId,BeneficiarioId,LocalRetiradaId,DataAgendada,DataRetirada")] RetiradaDoacao retiradaDoacao)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(retiradaDoaco);
+                // Obtém o UsuarioId da sessão e define o BeneficiarioId
+                var userId = HttpContext.Session.GetInt32("UsuarioId") ?? 0;
+                if (userId != 0)
+                {
+                    retiradaDoacao.BeneficiarioId = userId;
+                }
+
+                _context.Add(retiradaDoacao);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BeneficiarioId"] = new SelectList(_context.Usuarios, "Id", "Email", retiradaDoaco.BeneficiarioId);
-            ViewData["DoacaoId"] = new SelectList(_context.Doacoes, "Id", "Id", retiradaDoaco.DoacaoId);
-            ViewData["LocalRetiradaId"] = new SelectList(_context.LocaisRetirada, "Id", "Id", retiradaDoaco.LocalRetiradaId);
-            return View(retiradaDoaco);
+
+            ViewData["BeneficiarioId"] = new SelectList(_context.Usuarios, "Id", "Nome", retiradaDoacao.BeneficiarioId);
+            ViewData["DoacaoDescricaoAlimento"] = new SelectList(_context.Doacoes, "Id", "DescricaoAlimento", retiradaDoacao.DoacaoId);
+            ViewData["LocalRetiradaEndereco"] = new SelectList(_context.LocaisRetirada, "Id", "Endereco", retiradaDoacao.LocalRetiradaId);
+            return View(retiradaDoacao);
         }
 
         // GET: RetiradaDoacoes/Edit/5
@@ -82,25 +109,24 @@ namespace fomezero.Controllers
                 return NotFound();
             }
 
-            var retiradaDoaco = await _context.RetiradaDoacoes.FindAsync(id);
-            if (retiradaDoaco == null)
+            var retiradaDoacao = await _context.RetiradaDoacoes.FindAsync(id);
+            if (retiradaDoacao == null)
             {
                 return NotFound();
             }
-            ViewData["BeneficiarioId"] = new SelectList(_context.Usuarios, "Id", "Email", retiradaDoaco.BeneficiarioId);
-            ViewData["DoacaoDescricaoAlimento"] = new SelectList(_context.Doacoes, "Id", "DescricaoAlimento", retiradaDoaco.DoacaoId);
-            ViewData["LocalRetiradaEndereco"] = new SelectList(_context.LocaisRetirada, "Id", "Endereco", retiradaDoaco.LocalRetiradaId);
-            return View(retiradaDoaco);
+
+            ViewData["BeneficiarioId"] = new SelectList(_context.Usuarios, "Id", "Nome", retiradaDoacao.BeneficiarioId);
+            ViewData["DoacaoDescricaoAlimento"] = new SelectList(_context.Doacoes, "Id", "DescricaoAlimento", retiradaDoacao.DoacaoId);
+            ViewData["LocalRetiradaEndereco"] = new SelectList(_context.LocaisRetirada, "Id", "Endereco", retiradaDoacao.LocalRetiradaId);
+            return View(retiradaDoacao);
         }
 
         // POST: RetiradaDoacoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DoacaoId,BeneficiarioId,LocalRetiradaId,DataAgendada,DataRetirada")] RetiradaDoaco retiradaDoaco)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DoacaoId,BeneficiarioId,LocalRetiradaId,DataAgendada,DataRetirada")] RetiradaDoacao retiradaDoacao)
         {
-            if (id != retiradaDoaco.Id)
+            if (id != retiradaDoacao.Id)
             {
                 return NotFound();
             }
@@ -109,12 +135,12 @@ namespace fomezero.Controllers
             {
                 try
                 {
-                    _context.Update(retiradaDoaco);
+                    _context.Update(retiradaDoacao);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RetiradaDoacoExists(retiradaDoaco.Id))
+                    if (!RetiradaDoacaoExists(retiradaDoacao.Id))
                     {
                         return NotFound();
                     }
@@ -125,10 +151,11 @@ namespace fomezero.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BeneficiarioId"] = new SelectList(_context.Usuarios, "Id", "Email", retiradaDoaco.BeneficiarioId);
-            ViewData["DoacaoId"] = new SelectList(_context.Doacoes, "Id", "Id", retiradaDoaco.DoacaoId);
-            ViewData["LocalRetiradaId"] = new SelectList(_context.LocaisRetirada, "Id", "Id", retiradaDoaco.LocalRetiradaId);
-            return View(retiradaDoaco);
+
+            ViewData["BeneficiarioId"] = new SelectList(_context.Usuarios, "Id", "Nome", retiradaDoacao.BeneficiarioId);
+            ViewData["DoacaoDescricaoAlimento"] = new SelectList(_context.Doacoes, "Id", "DescricaoAlimento", retiradaDoacao.DoacaoId);
+            ViewData["LocalRetiradaEndereco"] = new SelectList(_context.LocaisRetirada, "Id", "Endereco", retiradaDoacao.LocalRetiradaId);
+            return View(retiradaDoacao);
         }
 
         // GET: RetiradaDoacoes/Delete/5
@@ -139,17 +166,17 @@ namespace fomezero.Controllers
                 return NotFound();
             }
 
-            var retiradaDoaco = await _context.RetiradaDoacoes
+            var retiradaDoacao = await _context.RetiradaDoacoes
                 .Include(r => r.Beneficiario)
                 .Include(r => r.Doacao)
                 .Include(r => r.LocalRetirada)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (retiradaDoaco == null)
+            if (retiradaDoacao == null)
             {
                 return NotFound();
             }
 
-            return View(retiradaDoaco);
+            return View(retiradaDoacao);
         }
 
         // POST: RetiradaDoacoes/Delete/5
@@ -157,17 +184,17 @@ namespace fomezero.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var retiradaDoaco = await _context.RetiradaDoacoes.FindAsync(id);
-            if (retiradaDoaco != null)
+            var retiradaDoacao = await _context.RetiradaDoacoes.FindAsync(id);
+            if (retiradaDoacao != null)
             {
-                _context.RetiradaDoacoes.Remove(retiradaDoaco);
+                _context.RetiradaDoacoes.Remove(retiradaDoacao);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RetiradaDoacoExists(int id)
+        private bool RetiradaDoacaoExists(int id)
         {
             return _context.RetiradaDoacoes.Any(e => e.Id == id);
         }
