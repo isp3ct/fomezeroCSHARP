@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Criar Nova Doação";
+
+    // Obtém o ID do usuário logado da sessão
+    var usuarioLogadoId = ViewContext.HttpContext.Session.GetInt32("UsuarioId") ?? 0;
 }
 
 <h1 class="mb-4">Criar Nova Doação</h1>
@@ -10,20 +13,19 @@
     <div class="col-md-8 offset-md-2">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UsuarioId" class="control-label">Usuário</label>
-                <select asp-for="UsuarioId" class="form-control" asp-items="ViewBag.UsuarioId"></select>
-            </div>
+
+            <input type="hidden" asp-for="UsuarioId" value="@usuarioLogadoId" />
+
             <div class="form-group">
                 <label asp-for="TipoDoacaoId" class="control-label">Tipo de Doação</label>
                 <select asp-for="TipoDoacaoId" class="form-control" asp-items="ViewBag.TipoDoacaoDescricao" id="tipoDoacaoSelect"></select>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="valorGroup">
                 <label asp-for="Valor" class="control-label">Valor (se em dinheiro)</label>
-                <input asp-for="Valor" class="form-control" />
+                <input asp-for="Valor" class="form-control" id="valorInput" />
                 <span asp-validation-for="Valor" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="descricaoAlimentoGroup">
                 <label asp-for="DescricaoAlimento" class="control-label">Alimento doado</label>
                 <input asp-for="DescricaoAlimento" class="form-control" id="descricaoAlimentoInput" />
                 <span asp-validation-for="DescricaoAlimento" class="text-danger"></span>
@@ -43,24 +45,32 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const tipoDoacaoSelect = document.getElementById("tipoDoacaoSelect");
+            const descricaoAlimentoGroup = document.getElementById("descricaoAlimentoGroup");
             const descricaoAlimentoInput = document.getElementById("descricaoAlimentoInput");
+            const valorGroup = document.getElementById("valorGroup");
 
-            // Função para habilitar ou desabilitar o campo de descrição do alimento
-            function toggleDescricaoAlimento() {
+            // Função para mostrar/ocultar os campos conforme o tipo de doação
+            function toggleFields() {
                 if (tipoDoacaoSelect.value === "1") { // Supondo que "1" seja o ID para dinheiro
+                    // Ocultar campo de alimento e exibir valor
+                    descricaoAlimentoGroup.style.display = "none";
+                    valorGroup.style.display = "block";
                     descricaoAlimentoInput.value = "Doação em Dinheiro";
                     descricaoAlimentoInput.disabled = true;
                 } else {
-                    descricaoAlimentoInput.value = ""; // Limpa o campo caso mude para outro tipo de doação
+                    // Exibir campo de alimento e ocultar valor
+                    descricaoAlimentoGroup.style.display = "block";
+                    valorGroup.style.display = "none";
+                    descricaoAlimentoInput.value = "";
                     descricaoAlimentoInput.disabled = false;
                 }
             }
 
             // Evento para monitorar mudanças no campo de tipo de doação
-            tipoDoacaoSelect.addEventListener("change", toggleDescricaoAlimento);
+            tipoDoacaoSelect.addEventListener("change", toggleFields);
 
             // Executar a lógica no carregamento da página
-            toggleDescricaoAlimento();
+            toggleFields();
         });
     </script>
 }

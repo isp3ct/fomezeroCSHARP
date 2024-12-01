@@ -36,10 +36,10 @@
                             <td>@(item?.Doacao?.DescricaoAlimento ?? "-")</td>
                             <td>@(item?.LocalRetirada?.Endereco ?? "-")</td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item?.Id" class="btn btn-sm btn-warning">Editar</a>
                                 <a asp-action="Details" asp-route-id="@item?.Id" class="btn btn-sm btn-info ml-1">Detalhes</a>
                                 @if (tipoUsuarioId == "1") // Supondo que "1" seja o ID do Admin
                                 {
+                                    <a asp-action="Edit" asp-route-id="@item?.Id" class="btn btn-sm btn-warning">Editar</a>
                                     <a asp-action="Delete" asp-route-id="@item?.Id" class="btn btn-sm btn-danger ml-1">Excluir</a>
                                 }
                             </td>

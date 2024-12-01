@@ -2,46 +2,53 @@
 
 @{
     ViewData["Title"] = "Index";
+
+    // Obtém o TipoUsuarioId da sessão
+    var tipoUsuarioId = ViewContext.HttpContext.Session.GetString("TipoUsuarioId");
 }
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="mb-4">Lista de Usuários</h1>
-            <p>
-                <a asp-action="Create" class="btn btn-primary mb-3">Criar Novo Usuário</a>
-            </p>
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>@Html.DisplayNameFor(model => model.Nome)</th>
-                        <th>@Html.DisplayNameFor(model => model.Email)</th>
-                        <th>@Html.DisplayNameFor(model => model.Telefone)</th>
-                        <th>@Html.DisplayNameFor(model => model.Senha)</th>
-                        <th>@Html.DisplayNameFor(model => model.DocumentoIdentificacao)</th>
-                        <th>@Html.DisplayNameFor(model => model.TipoUsuario)</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
+<h1 class="mb-4">Usuários</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary mb-3">Criar Novo Usuário</a>
+</p>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome) <!-- Nome do usuário -->
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email) <!-- E-mail do usuário -->
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TipoUsuario.Descricao) <!-- Descrição do tipo de usuário -->
+            </th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome) <!-- Exibe o nome -->
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email) <!-- Exibe o email -->
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TipoUsuario.Descricao) <!-- Exibe a descrição do tipo de usuário -->
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info ml-1">Detalhes</a>
+                    @if (!string.IsNullOrEmpty(tipoUsuarioId) && tipoUsuarioId == "Admin")
                     {
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.Nome)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Telefone)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Senha)</td>
-                            <td>@Html.DisplayFor(modelItem => item.DocumentoIdentificacao)</td>
-                            <td>@Html.DisplayFor(modelItem => item.TipoUsuario.Descricao)</td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info ml-1">Detalhes</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger ml-1">Excluir</a>
-                            </td>
-                        </tr>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning ml-1">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger ml-1">Excluir</a>
                     }
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -22,16 +22,24 @@ namespace fomezero.Controllers
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
+            // Obtém a lista de usuários, incluindo o TipoUsuario
             var usuarios = await _context.Usuarios
                 .Include(u => u.TipoUsuario)
                 .ToListAsync();
+
+            // Retorna a View com o modelo correto
             return View(usuarios);
         }
 
         // GET: Usuarios/Create
         public IActionResult Create()
         {
-            ViewBag.TipoUsuarioId = new SelectList(_context.TipoUsuarios.ToList(), "Id", "Descricao");
+            // Filtra para excluir o tipo "Admin" da lista de tipos de usuário
+            var tiposUsuario = _context.TipoUsuarios
+                .Where(t => t.Descricao != "Admin") // Exclui o tipo 'Admin'
+                .ToList();
+
+            ViewBag.TipoUsuarioId = new SelectList(tiposUsuario, "Id", "Descricao");
             return View();
         }
 
@@ -62,7 +70,7 @@ namespace fomezero.Controllers
             {
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View("Login");
             }
             catch (Exception ex)
             {

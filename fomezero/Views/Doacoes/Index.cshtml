@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Index";
+
+    // Obtém o tipo de usuário da sessão
+    var usuarioTipo = ViewContext.HttpContext.Session.GetString("TipoUsuarioId");
 }
 
 <h1 class="mb-4">Doações</h1>
@@ -27,7 +30,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Usuario)
             </th>
-            <th></th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
@@ -50,9 +53,12 @@
                     @Html.DisplayFor(modelItem => item.Usuario.Email)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info ml-1">Detalhes</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger ml-1">Excluir</a>
+                    @if (usuarioTipo == "Admin") // Verifica se o usuário logado é Admin
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning ml-1">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger ml-1">Excluir</a>
+                    }
                 </td>
             </tr>
         }
