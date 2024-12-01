@@ -151,17 +151,4 @@ INSERT INTO doacoes_instituicoes (doacao_id, instituicao_id) VALUES
 - **Locais de Retirada**: Centro de Distribuição A (Rua das Flores, 123), Centro de Distribuição B (Avenida Brasil, 456).
 - **Instituições Participantes**: Instituição de Apoio Social, ONG Esperança.
 
-## Como Executar o Projeto
-Para executar o projeto, é necessário:
 
-1. Ter o PostgreSQL instalado e configurado com a base de dados fornecida.
-2. Executar os scripts SQL para criação e população das tabelas.
-3. Utilizar o Entity Framework para realizar o `Scaffold-DbContext` e gerar os modelos:
-
-   ```bash
-   Scaffold-DbContext "Host=localhost;Database=fomezero;Username=postgre;Password=2812" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models
-   ```
-
-Com isso, a plataforma estará pronta para receber doações e permitir a gestão das retiradas.
-
----
